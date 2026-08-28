@@ -5,32 +5,50 @@ from fastapi import FastAPI,Request
 from fastapi.responses import JSONResponse,HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from backend import run_travel_agent
 
 app = FastAPI(
     title="Travel Agent",
-    description="LangGraph Multi-Agent  with Postgres Checkpointer",
+    description="LangGraph Multi-Agent with Postgres Checkpointer",
     version="1.0.0"
 )
 
-BASE_DIR =Path(__file__).resolve().parent
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+BASE_DIR = Path(__file__).resolve().parent
+FRONTEND_DIST = BASE_DIR / "frontend" / "dist"
 
 app.mount("/static",
     StaticFiles(directory=BASE_DIR / "static"),
     name="static"
 )
 
-templates = Jinja2Templates(
-    directory=str(BASE_DIR / "templates"))
+if (FRONTEND_DIST / "assets").exists():
+    app.mount("/assets",
+        StaticFiles(directory=FRONTEND_DIST / "assets"),
+        name="frontend_assets"
+    )
+
+templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 
 class TravelRequest(BaseModel):
-    message:str
-    thread_id:str | None = None
+    message: str
+    thread_id: str | None = None
 
-@app.get("/",response_class=HTMLResponse)
-async def home(request:Request):
+@app.get("/", response_class=HTMLResponse)
+async def home(request: Request):
+    dist_index = FRONTEND_DIST / "index.html"
+    if dist_index.exists():
+        return HTMLResponse(content=dist_index.read_text(encoding="utf-8"))
     return templates.TemplateResponse(request=request, name="index.html")       
 
 

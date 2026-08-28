@@ -16,7 +16,7 @@ from langchain_core.runnables import RunnablePassthrough,RunnableLambda
 from langgraph.graph import StateGraph,END,START
 from langgraph.checkpoint.postgres import PostgresSaver
 from langgraph.prebuilt import ToolNode,tools_condition
-from langchain.messages import (
+from langchain_core.messages import (
     AnyMessage,
     HumanMessage,
     SystemMessage,
@@ -36,7 +36,7 @@ GROQ_API_KEY=os.getenv("GROQ_API_KEY")
 if not GROQ_API_KEY:
     raise ValueError("GROQ_API_KEY not found in environment variables")
 
-GROQ_MODEL = "meta-llama/llama-4-scout-17b-16e-instruct"
+GROQ_MODEL = "openai/gpt-oss-20b"
 
 def get_db_url():
     db_url=os.getenv("DATABASE_URL")
@@ -157,8 +157,9 @@ def final_agent(state:TravelState):
     ])
 
     return {
-        "itinerary":[response],
-        "llm_calls":state.get("llm_calls",0)+1
+        "itinerary": str(response.content),
+        "messages": [response],
+        "llm_calls": state.get("llm_calls",0)+1
     }
 
 
