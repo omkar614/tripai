@@ -5,7 +5,7 @@ const QUICK_PROMPTS = [
   {
     label: '7 Days Japan Trip',
     icon: MapPin,
-    prompt: 'Plan a complete 7 days Japan trip from Bangladesh including flights, hotels and sightseeing under 2 lakhs.'
+    prompt: 'Plan a complete 7 days Japan trip from India including flights, hotels and sightseeing under 2 lakhs.'
   },
   {
     label: '5 Days Dubai Luxury',
@@ -15,7 +15,7 @@ const QUICK_PROMPTS = [
   {
     label: '7 Days Thailand Budget',
     icon: DollarSign,
-    prompt: 'Plan a 7 days Thailand trip from Bangladesh with budget hotels and sightseeing.'
+    prompt: 'Plan a 7 days Thailand trip from India with budget hotels and sightseeing.'
   },
   {
     label: 'Global Live Flights',
